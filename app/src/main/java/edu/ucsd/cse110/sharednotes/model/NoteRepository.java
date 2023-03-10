@@ -78,7 +78,7 @@ public class NoteRepository {
     public void upsertLocal(Note note, boolean incrementVersion) {
         // We don't want to increment when we sync from the server, just when we save.
         if (incrementVersion) note.version = note.version + 1;
-        note.version = note.version + 1;
+//        note.version = note.version + 1;
         dao.upsert(note);
     }
 
@@ -107,8 +107,6 @@ public class NoteRepository {
             poller.cancel(true);
         }
 
-
-
         var executor = Executors.newSingleThreadScheduledExecutor();
         poller = executor.scheduleAtFixedRate(() -> {
             Note retrieveNote;
@@ -134,12 +132,16 @@ public class NoteRepository {
     public void upsertRemote(Note note) {
         // TODO: Implement upsertRemote!
         var remoteNote = liveNote.getValue();
-
+        Log.d("TESTINGTESTING", remoteNote.content);
         if(remoteNote != null) {
-            Log.d("UPSERT_REMOTE-1", String.valueOf(note.version));
-            Log.d("UPSERT_REMOTE-2",String.valueOf(remoteNote.version));
+            Log.d("UPSERT_REMOTE-1", String.valueOf(note.version) + note.content);
+            Log.d("UPSERT_REMOTE-2",String.valueOf(remoteNote.version) + remoteNote.content);
             if (remoteNote.version < note.version) {
-                myNoteApi.putNote(note);
+                Thread putThread = new Thread(() -> {
+                    myNoteApi.putNote(note);
+                });
+                putThread.start();
+
             }
         }
 

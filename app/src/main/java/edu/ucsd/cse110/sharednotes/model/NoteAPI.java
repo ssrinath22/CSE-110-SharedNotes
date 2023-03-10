@@ -85,9 +85,11 @@ public class NoteAPI {
 
         try (var response = client.newCall(request).execute()) {
             assert response.body() != null;
-            var body = response.body().string();
-            Log.i("GET_NOTE", body);
-            return new Note(title, body);
+            var body = response.body();
+            var note = Note.fromJSON(body.string());
+            Log.i("GET_NOTE", note.content);
+            return note;
+
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -99,7 +101,7 @@ public class NoteAPI {
         String json = note.toPutJson(new String[]{"content","version"});
 
         Log.d("LIST_TEST", json + " " +note.title);
-        Thread putThread = new Thread(() -> {
+//        Thread putThread = new Thread(() -> {
             var body = RequestBody.create(json, JSON);
             Request request = new Request.Builder()
                     .url("https://sharednotes.goto.ucsd.edu/notes/" + encodedTitle)
@@ -110,8 +112,8 @@ public class NoteAPI {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        });
-        putThread.start();
+//        });
+//        putThread.start();
     }
 
 
