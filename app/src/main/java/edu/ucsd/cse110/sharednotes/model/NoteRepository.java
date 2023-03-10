@@ -19,10 +19,11 @@ public class NoteRepository {
     private final NoteDao dao;
     private ScheduledFuture<?> poller; // what could this be for... hmm?
     private NoteAPI myNoteApi = new NoteAPI();
-
+    MutableLiveData<Note> liveNote ;
 
     public NoteRepository(NoteDao dao) {
         this.dao = dao;
+        this.liveNote = new MutableLiveData<Note>();
     }
 
     // Synced Methods
@@ -106,7 +107,7 @@ public class NoteRepository {
             poller.cancel(true);
         }
 
-        var myNote = new MutableLiveData<Note>();
+
 
         var executor = Executors.newSingleThreadScheduledExecutor();
         poller = executor.scheduleAtFixedRate(() -> {
@@ -117,7 +118,7 @@ public class NoteRepository {
                 e.printStackTrace();
                 throw new RuntimeException();
             }
-            myNote.postValue(retrieveNote);
+            liveNote.postValue(retrieveNote);
         }, 0, 3000, TimeUnit.MILLISECONDS);
 
         // Set up a background thread that will poll the server every 3 seconds.
@@ -125,17 +126,22 @@ public class NoteRepository {
         // you don't create a new polling thread every time you call getRemote with the same title.
         // You don't need to worry about killing background threads.
 
-       return myNote;
+       return liveNote;
 
     }
 
 
     public void upsertRemote(Note note) {
         // TODO: Implement upsertRemote!
+        var remoteNote = liveNote.getValue();
 
-
-        throw new UnsupportedOperationException("Not implemented yet");
-
+        if(remoteNote != null) {
+            Log.d("UPSERT_REMOTE-1", String.valueOf(note.version));
+            Log.d("UPSERT_REMOTE-2",String.valueOf(remoteNote.version));
+            if (remoteNote.version < note.version) {
+                myNoteApi.putNote(note);
+            }
+        }
 
 
     }

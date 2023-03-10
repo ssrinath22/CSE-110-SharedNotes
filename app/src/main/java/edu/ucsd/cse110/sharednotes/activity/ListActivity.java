@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -105,22 +106,25 @@ public class ListActivity extends AppCompatActivity {
 
         setupViews(viewModel, adapter);
 
-        NoteAPI myApi = new NoteAPI();
-//        Note myNote = new Note("sidtest_22_2","THis is an test put request");
-//        Log.d("LIST_ACT", myNote.toJSON().toString());
-        var response = myApi.getNoteAsync("kakakakakakakaka");
-        ScheduledFuture<?> poller; // what could this be for... hmm?
+// testing code
+//        NoteAPI myApi = new NoteAPI();
+//        var myNote = new MutableLiveData<Note>();
+//
+//        var executor = Executors.newSingleThreadScheduledExecutor();
+//        ScheduledFuture<?> poller;
+//
+//        poller = executor.scheduleAtFixedRate(() -> {
+//            Note retrieveNote;
+//            try {
+//                retrieveNote = myApi.getNote("sidtest");
+//            } catch (Exception e){
+//                e.printStackTrace();
+//                throw new RuntimeException();
+//            }
+//            myNote.postValue(retrieveNote);
+//
+//        }, 0, 3000, TimeUnit.MILLISECONDS);
 
-
-        var executor = Executors.newSingleThreadScheduledExecutor();
-        poller = executor.scheduleAtFixedRate(() -> {
-            try {
-                var idk = response.get();
-                Log.d("LIST_ACT", );
-            }catch(Exception e){
-                throw new RuntimeException();
-            }
-        }, 0, 3000, TimeUnit.MILLISECONDS);
 
 
     }
