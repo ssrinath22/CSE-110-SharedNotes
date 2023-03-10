@@ -5,12 +5,17 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+
+import org.json.JSONObject;
 
 import java.time.Instant;
 
@@ -55,5 +60,28 @@ public class Note {
 
     public String toJSON() {
         return new Gson().toJson(this);
+    }
+
+    public String toPutJson(String[] fieldsToInclude){
+        ExclusionStrategy strategy = new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes attr) {
+                for (var field : fieldsToInclude) {
+                    if (attr.getName().equals(field)){
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+        };
+
+        Gson gson = new GsonBuilder().addSerializationExclusionStrategy(strategy).create();
+
+        return gson.toJson(this);
     }
 }

@@ -16,8 +16,14 @@ import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 import edu.ucsd.cse110.sharednotes.R;
 import edu.ucsd.cse110.sharednotes.model.Note;
+import edu.ucsd.cse110.sharednotes.model.NoteAPI;
 import edu.ucsd.cse110.sharednotes.view.NotesAdapter;
 import edu.ucsd.cse110.sharednotes.viewmodel.ListViewModel;
 
@@ -98,6 +104,25 @@ public class ListActivity extends AppCompatActivity {
         var adapter = setupAdapter(viewModel);
 
         setupViews(viewModel, adapter);
+
+        NoteAPI myApi = new NoteAPI();
+//        Note myNote = new Note("sidtest_22_2","THis is an test put request");
+//        Log.d("LIST_ACT", myNote.toJSON().toString());
+        var response = myApi.getNoteAsync("kakakakakakakaka");
+        ScheduledFuture<?> poller; // what could this be for... hmm?
+
+
+        var executor = Executors.newSingleThreadScheduledExecutor();
+        poller = executor.scheduleAtFixedRate(() -> {
+            try {
+                var idk = response.get();
+                Log.d("LIST_ACT", );
+            }catch(Exception e){
+                throw new RuntimeException();
+            }
+        }, 0, 3000, TimeUnit.MILLISECONDS);
+
+
     }
 
     private ListViewModel setupViewModel() {
