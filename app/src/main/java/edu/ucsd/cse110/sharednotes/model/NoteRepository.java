@@ -112,6 +112,8 @@ public class NoteRepository {
             Note retrieveNote;
             try {
                 retrieveNote = myNoteApi.getNote(title);
+                if(retrieveNote == null) myNoteApi.putNote(new Note(title,""));
+
             } catch (Exception e){
                 e.printStackTrace();
                 throw new RuntimeException();
@@ -132,7 +134,7 @@ public class NoteRepository {
     public void upsertRemote(Note note) {
         // TODO: Implement upsertRemote!
         var remoteNote = liveNote.getValue();
-        Log.d("TESTINGTESTING", remoteNote.content);
+        if(remoteNote != null)  Log.d("TESTINGTESTING", remoteNote.content);
         if(remoteNote != null) {
             Log.d("UPSERT_REMOTE-1", String.valueOf(note.version) + note.content);
             Log.d("UPSERT_REMOTE-2",String.valueOf(remoteNote.version) + remoteNote.content);

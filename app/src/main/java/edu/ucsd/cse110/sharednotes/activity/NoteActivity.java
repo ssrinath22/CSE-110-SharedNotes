@@ -3,6 +3,7 @@ package edu.ucsd.cse110.sharednotes.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -70,6 +71,7 @@ public class NoteActivity extends AppCompatActivity {
         var saveButton = findViewById(R.id.button_save);
         saveButton.setOnClickListener((View v) -> {
             var updatedNote = note.getValue();
+            Log.d("NOTEACT",updatedNote.content);
             var updatedContent = contentView.getText().toString();
             assert updatedNote != null;
 
